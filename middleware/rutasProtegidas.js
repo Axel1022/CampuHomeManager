@@ -9,12 +9,11 @@ const protegerRuta = async (req, res, next) => {
   //Validar el token
   try {
     const decoded = jwt.verify(_token, process.env.JWT_SECRET);
-    const usuario = (await Usuario.scope("menosDatos").findByPk(decoded.id))
-      .dataValues;
+    const usuario = await Usuario.scope("menosDatos").findByPk(decoded.id)
 
     //Poner el usuario al req
-    if (!usuario) {
-      req.usuario = usuario;
+    if (usuario) {
+      req.usuario = usuario.dataValues;
     }
 
     return next();
