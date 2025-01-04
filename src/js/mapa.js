@@ -1,7 +1,7 @@
 (function () {
   // 18.476522,-69.9362786 // Se obtienen de google map
-  const lat = 18.476522;
-  const lng = -69.9362786;
+  const lat =document.querySelector("#lat").value ||  18.476522;
+  const lng = document.querySelector("#lng").value || -69.9362786;
   const mapa = L.map("mapa").setView([lat, lng], 13);
   let marker; //Pin
 

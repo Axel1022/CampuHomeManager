@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import { obtenerCategoriasYPrecios } from "../helpers/obtnerCategoriasyPrecios.js";
+import { Propiedad } from "../Models/Relaciones.js";
 
 //TODO: Muestras las propiedades en el home
 const homePropiedades = (req, res) => {
@@ -20,12 +21,12 @@ const formularioPropiedades = async (req, res) => {
       navBar: true,
       Categorias: categoriasMap,
       Precios: preciosMap,
+      datos: {},
     });
   } catch (error) {
     console.log(error);
   }
 };
-
 
 //TODO: Crear Propiedades
 const crearPropiedad = async (req, res) => {
@@ -41,9 +42,47 @@ const crearPropiedad = async (req, res) => {
       Categorias: categoriasMap,
       Precios: preciosMap,
       errores,
+      datos: req.body,
     });
   }
   //Paso 2: Crear propiedad
+
+  const {
+    titulo,
+    descripcion,
+    habitaciones,
+    parqueos,
+    banos,
+    calle,
+    lat,
+    lng,
+    categoria: categoriaId,
+    precio: precioId,
+  } = req.body;
+  //categoria: categoria_id, //! Renombrando la variable, i love this, xd
+
+  //Obtener el usuario que esta loggeado
+  const { id: usuarioId } = req.usuario;
+
+  //Creando la propiedad
+  try {
+    const propiedadCreada = await Propiedad.create({
+      titulo,
+      descripcion,
+      habitaciones,
+      parqueos,
+      banos,
+      calle,
+      lat,
+      lng,
+      imagen: "",
+      usuarioId,
+      categoriaId,
+      precioId,
+    });
+    const { id } = propiedadCreada;
+    res.redirect(`/propiedades/agregarImagen/${id}`);
+  } catch (error) {}
 };
 
 export { homePropiedades, formularioPropiedades, crearPropiedad };

@@ -88,7 +88,7 @@ const validarUsuario = async (req, res) => {
       .cookie("_token", token, {
         httpOnly: true,
       })
-      .redirect("/mis-propiedades");
+      .redirect("/propiedades");
   } catch (error) {
     console.error("Error durante el proceso de autenticación:", error);
     res.status(500).render("auth/login", {

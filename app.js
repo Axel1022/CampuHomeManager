@@ -2,6 +2,9 @@ import express from "express";
 import usuarioRoutes from "./Router/usuarioRoutes.js";
 import proiedadesRoutes from "./Router/propiedadesRoutes.js";
 import NotFund from "./Controllers/404Controller.js";
+import cookieParser from "cookie-parser";
+
+
 
 
 const app = express();
@@ -9,6 +12,7 @@ const app = express();
 // Configuración
 app.set("view engine", "pug");
 app.set("views", "./Views");
+app.use(cookieParser());
 app.use(express.static("public"));
 
 // Middleware para analizar JSON

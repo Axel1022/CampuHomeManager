@@ -15,7 +15,7 @@ const importarDatos = async () => {
     //Importar datos en paralelo
     await Promise.all([
       Precio.bulkCreate(precios),
-      Usuario.bulkCreate(usuarios), //Hay que salar la contracena
+      Usuario.bulkCreate(usuarios),
       Categoria.bulkCreate(categorias),
     ]);
 
@@ -28,12 +28,6 @@ const importarDatos = async () => {
 };
 const eliminarDatos = async () => {
   try {
-    // await Promise.all([
-    //   Precio.destroy({ where: {}, truncate: true }),
-    //   Usuario.destroy({ where: {}, truncate: true }),
-    //   Categoria.destroy({ where: {}, truncate: true }),
-    // ]);
-
     await db.sync({ force: true });
     console.log("Datos eliminados exitosamente");
     process.exit();

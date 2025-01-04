@@ -1,6 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
 const router = express.Router();
+import protegerRuta from "../middleware/rutasProtegidas.js";
 
 // Importar controladores
 import {
@@ -10,10 +11,11 @@ import {
 } from "../Controllers/propiedadesController.js";
 
 //Rutas
-router.get("/propiedades", homePropiedades);
-router.get("/propiedades/crear", formularioPropiedades);
+router.get("/propiedades",protegerRuta, homePropiedades);
+router.get("/propiedades/crear",protegerRuta, formularioPropiedades);
 router.post(
   "/propiedades/crear",
+  protegerRuta,
   body("titulo", "El título no puede estar vacío").notEmpty(),
   body("descripcion", "La descripción no puede estar vacía").notEmpty(),
   body("categoria", "La categoría es obligatoria").notEmpty(),
