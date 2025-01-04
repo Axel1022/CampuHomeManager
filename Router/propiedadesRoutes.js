@@ -8,6 +8,7 @@ import {
   homePropiedades,
   formularioPropiedades,
   crearPropiedad,
+  agregarImagen,
 } from "../Controllers/propiedadesController.js";
 
 //Rutas
@@ -26,6 +27,7 @@ router.post(
   body("calle", "Ubica la propiedad en el mapa.").notEmpty(),
   crearPropiedad
 );
+router.get("/propiedades/agregarImagen/:id", protegerRuta, agregarImagen);
 
 //Exportar rutas
 export default router;

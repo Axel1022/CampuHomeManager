@@ -85,4 +85,14 @@ const crearPropiedad = async (req, res) => {
   } catch (error) {}
 };
 
-export { homePropiedades, formularioPropiedades, crearPropiedad };
+//TODO: Agregar Imagen a la propiedad
+const agregarImagen = (req, res) => {
+  res.send("Agregando imagen");
+};
+
+export {
+  homePropiedades,
+  formularioPropiedades,
+  crearPropiedad,
+  agregarImagen,
+};

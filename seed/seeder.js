@@ -1,9 +1,9 @@
 import categorias from "./categorias.js";
 import precios from "./precios.js";
-//Importar relaciones
-import { Precio, Categoria } from "../Models/Relaciones.js";
 import usuarios from "./usuarios.js";
-import Usuario from "../Models/Usuario.js";
+import propiedades from "./propiedades.js";
+//Importar relaciones
+import { Precio, Categoria, Propiedad, Usuario } from "../Models/Relaciones.js";
 import db from "../config/db.js";
 
 const importarDatos = async () => {
@@ -17,6 +17,7 @@ const importarDatos = async () => {
       Precio.bulkCreate(precios),
       Usuario.bulkCreate(usuarios),
       Categoria.bulkCreate(categorias),
+      Propiedad.bulkCreate(propiedades),
     ]);
 
     console.log("Datos importados exitosamente");
