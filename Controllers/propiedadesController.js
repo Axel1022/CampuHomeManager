@@ -20,12 +20,12 @@ const formularioPropiedades = async (req, res) => {
       navBar: true,
       Categorias: categoriasMap,
       Precios: preciosMap,
+      datos: {},
     });
   } catch (error) {
     console.log(error);
   }
 };
-
 
 //TODO: Crear Propiedades
 const crearPropiedad = async (req, res) => {
@@ -41,6 +41,7 @@ const crearPropiedad = async (req, res) => {
       Categorias: categoriasMap,
       Precios: preciosMap,
       errores,
+      datos: req.body,
     });
   }
   //Paso 2: Crear propiedad
