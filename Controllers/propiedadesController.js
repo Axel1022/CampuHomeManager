@@ -6,7 +6,6 @@ import { Propiedad } from "../Models/Relaciones.js";
 const homePropiedades = (req, res) => {
   res.render("propiedades/admin", {
     pagina: "Mis Propiedades",
-    navBar: true,
   });
 };
 
@@ -18,7 +17,6 @@ const formularioPropiedades = async (req, res) => {
     //Paso 3: Mostrar el formulario
     res.render("propiedades/crearPropiedad", {
       pagina: "Crear Propiedad",
-      navBar: true,
       Categorias: categoriasMap,
       Precios: preciosMap,
       datos: {},
@@ -38,7 +36,6 @@ const crearPropiedad = async (req, res) => {
     //Paso 3: Mostrar el formulario
     return res.render("propiedades/crearPropiedad", {
       pagina: "Crear Propiedad",
-      navBar: true,
       Categorias: categoriasMap,
       Precios: preciosMap,
       errores,
@@ -87,7 +84,9 @@ const crearPropiedad = async (req, res) => {
 
 //TODO: Agregar Imagen a la propiedad
 const agregarImagen = (req, res) => {
-  res.send("Agregando imagen");
+  res.render("propiedades/agregarImagen", {
+    pagina: "Agregar Imagen",
+  });
 };
 
 export {
