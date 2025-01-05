@@ -99,13 +99,22 @@ const agregarImagen = async (req, res) => {
     //Lo mandamos al home de propiedades
     return res.redirect("/propiedades");
   }
-  //validar el dueño de la propiedad
 
-  console.log(req.usuario)
+  //validar el dueño de la propiedad
+  if (req.usuario.id !== propiedad.usuarioId) {
+    // Si el usuario no es el dueño de la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
 
   res.render("propiedades/agregarImagen", {
-    pagina: "Agregar Imagen",
+    pagina: `Agregar Imagen: ${propiedad.titulo}`,
+    propiedad,
   });
+};
+
+const agregarImagenPost = async (req, res) => {
+  console.log("Subiendo imagen");
 };
 
 export {
@@ -113,4 +122,5 @@ export {
   formularioPropiedades,
   crearPropiedad,
   agregarImagen,
+  agregarImagenPost,
 };
