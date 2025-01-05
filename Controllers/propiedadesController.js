@@ -83,7 +83,26 @@ const crearPropiedad = async (req, res) => {
 };
 
 //TODO: Agregar Imagen a la propiedad
-const agregarImagen = (req, res) => {
+const agregarImagen = async (req, res) => {
+  //Validar que la propiedad exista
+  const { id } = req.params;
+  const propiedad = await Propiedad.findByPk(id);
+  if (!propiedad) {
+    //Si no existe la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  //Validar que la propiedad no este publicada
+  if (propiedad.publicado) {
+    //Si la propiedad esta publicada
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+  //validar el dueño de la propiedad
+
+  console.log(req.usuario)
+
   res.render("propiedades/agregarImagen", {
     pagina: "Agregar Imagen",
   });
