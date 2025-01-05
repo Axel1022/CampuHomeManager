@@ -1,5 +1,5 @@
 {
-  "name": "bienesraices",
+  "name": "CampuHomeManager",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
@@ -21,18 +21,18 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Axel1022/Bienes_Raices.git"
+    "url": "git+https://github.com/Axel1022/CampuHomeManager.git"
   },
   "author": "Gary Alexander Campusano Paredes",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Axel1022/Bienes_Raices/issues"
+    "url": "https://github.com/Axel1022/CampuHomeManager/issues"
   },
-  "homepage": "https://github.com/Axel1022/Bienes_Raices#readme",
+  "homepage": "https://github.com/Axel1022/CampuHomeManager#readme",
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "bienesraices": "file:",
+    "CampuHomeManager": "file:",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "dropzone": "^5.9.3",

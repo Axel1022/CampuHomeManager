@@ -15,8 +15,7 @@ const connection = new Sequelize(
   {
     dialect: process.env.BD_DIALECT || "sqlite",
     storage:
-      process.env.BD_STORAGE ||
-      path.join(__dirname, "../", "bienesRaices.sqlite"),
+      process.env.BD_STORAGE || path.join(__dirname, "../", "CampuHomeManager.sqlite"),
     define: {
       underscored: true,
     },

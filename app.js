@@ -4,9 +4,6 @@ import proiedadesRoutes from "./Router/propiedadesRoutes.js";
 import NotFund from "./Controllers/404Controller.js";
 import cookieParser from "cookie-parser";
 
-
-
-
 const app = express();
 
 // Configuración
