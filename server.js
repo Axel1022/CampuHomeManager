@@ -2,7 +2,7 @@ import app from "./app.js";
 import connectiondb from "./config/db.js";
 import chalk from "chalk";
 
-const port = parseInt(process.env.PORT, 10) || 8080;
+const port = parseInt(process.env.PORT, 10) || 8081;
 
 if (isNaN(port)) {
   console.error("❌ El puerto especificado no es válido.");
