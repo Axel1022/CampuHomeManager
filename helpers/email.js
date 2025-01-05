@@ -17,17 +17,17 @@ const emailRegistro = async (datos) => {
 
   try {
     await transporte.sendMail({
-      from: "Bienes Raíces <noreply@bienesraices.com>",
+      from: "CampuHomeManager <noreply@CampuHomeManager.com>",
       to: email,
-      subject: "Confirma tu cuenta en Bienes Raíces",
-      text: `Hola ${nombre}, gracias por registrarte en Bienes Raíces. Para confirmar tu cuenta, haz clic en el siguiente enlace: ${
+      subject: "Confirma tu cuenta en CampuHomeManager",
+      text: `Hola ${nombre}, gracias por registrarte en CampuHomeManager. Para confirmar tu cuenta, haz clic en el siguiente enlace: ${
         process.env.BACKEND_URL
       }:${process.env.PORT ?? 8080}/auth/confirmar/${token}`,
       html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
         <h2 style="color: #333;">¡Hola ${nombre}!</h2>
         <p style="color: #555; line-height: 1.6;">
-            Gracias por registrarte en <strong>Bienes Raíces</strong>. Estamos emocionados de tenerte como parte de nuestra comunidad.
+            Gracias por registrarte en <strong>CampuHomeManager</strong>. Estamos emocionados de tenerte como parte de nuestra comunidad.
         </p>
         <p style="color: #555; line-height: 1.6;">
             Por favor, confirma tu cuenta haciendo clic en el siguiente botón:
@@ -44,7 +44,7 @@ const emailRegistro = async (datos) => {
             Si no fuiste tú quien realizó este registro, ignora este correo.
         </p>
         <p style="color: #999; font-size: 12px; text-align: center;">
-            © ${new Date().getFullYear()} Bienes Raíces. Todos los derechos reservados.
+            © ${new Date().getFullYear()} CampuHomeManager. Todos los derechos reservados.
         </p>
     </div>
     `,
@@ -79,15 +79,15 @@ const emailInicioSesion = async (datos) => {
 
   try {
     await transporte.sendMail({
-      from: "Bienes Raíces <noreply@bienesraices.com>",
+      from: "CampuHomeManager <noreply@CampuHomeManager.com>",
       to: email,
       subject: "Inicio de sesión exitoso",
-      text: `Hola ${nombre}, has iniciado sesión en tu cuenta de Bienes Raíces exitosamente. Si no fuiste tú, por favor cambia tu contraseña inmediatamente.`,
+      text: `Hola ${nombre}, has iniciado sesión en tu cuenta de CampuHomeManager exitosamente. Si no fuiste tú, por favor cambia tu contraseña inmediatamente.`,
       html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
           <h2 style="color: #333;">Hola ${nombre}</h2>
           <p style="color: #555; line-height: 1.6;">
-              Has iniciado sesión en tu cuenta de <strong>Bienes Raíces</strong> exitosamente.
+              Has iniciado sesión en tu cuenta de <strong>CampuHomeManager</strong> exitosamente.
           </p>
           <p style="color: #555; line-height: 1.6;">
               Si no fuiste tú, por favor <a href="${
@@ -95,7 +95,7 @@ const emailInicioSesion = async (datos) => {
               }/auth/restablecer">cambia tu contraseña</a> inmediatamente.
           </p>
           <p style="color: #999; font-size: 12px; text-align: center;">
-              © ${new Date().getFullYear()} Bienes Raíces. Todos los derechos reservados.
+              © ${new Date().getFullYear()} CampuHomeManager. Todos los derechos reservados.
           </p>
       </div>
       `,
@@ -125,15 +125,15 @@ const emailCuentaActivada = async (datos) => {
 
   try {
     await transporte.sendMail({
-      from: "Bienes Raíces <noreply@bienesraices.com>",
+      from: "CampuHomeManager <noreply@CampuHomeManager.com>",
       to: email,
       subject: "¡Tu cuenta ha sido activada!",
-      text: `Hola ${nombre}, tu cuenta en Bienes Raíces ha sido activada exitosamente. Ya puedes disfrutar de todos nuestros servicios.`,
+      text: `Hola ${nombre}, tu cuenta en CampuHomeManager ha sido activada exitosamente. Ya puedes disfrutar de todos nuestros servicios.`,
       html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
           <h2 style="color: #333;">¡Hola ${nombre}!</h2>
           <p style="color: #555; line-height: 1.6;">
-              Nos complace informarte que tu cuenta en <strong>Bienes Raíces</strong> ha sido activada exitosamente.
+              Nos complace informarte que tu cuenta en <strong>CampuHomeManager</strong> ha sido activada exitosamente.
           </p>
           <p style="color: #555; line-height: 1.6;">
               Ya puedes iniciar sesión y disfrutar de todos nuestros servicios desde el siguiente enlace:
@@ -145,7 +145,7 @@ const emailCuentaActivada = async (datos) => {
               </a>
           </div>
           <p style="color: #999; font-size: 12px; text-align: center;">
-              © ${new Date().getFullYear()} Bienes Raíces. Todos los derechos reservados.
+              © ${new Date().getFullYear()} CampuHomeManager. Todos los derechos reservados.
           </p>
       </div>
       `,
@@ -174,7 +174,7 @@ const emailRestablecerContrasena = async (datos) => {
 
   try {
     await transporte.sendMail({
-      from: "Bienes Raíces <noreply@bienesraices.com>",
+      from: "CampuHomeManager <noreply@CampuHomeManager.com>",
       to: email,
       subject: "Restablecimiento de contraseña",
       text: `Hola ${nombre}, para restablecer tu contraseña haz clic en el siguiente enlace: ${
@@ -186,7 +186,7 @@ const emailRestablecerContrasena = async (datos) => {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
           <h2 style="color: #333;">Hola ${nombre}</h2>
           <p style="color: #555; line-height: 1.6;">
-              Recibimos una solicitud para restablecer tu contraseña en <strong>Bienes Raíces</strong>.
+              Recibimos una solicitud para restablecer tu contraseña en <strong>CampuHomeManager</strong>.
           </p>
           <p style="color: #555; line-height: 1.6;">
               Haz clic en el botón a continuación para cambiar tu contraseña:
@@ -203,7 +203,7 @@ const emailRestablecerContrasena = async (datos) => {
               Si no solicitaste este cambio, puedes ignorar este correo.
           </p>
           <p style="color: #999; font-size: 12px; text-align: center;">
-              © ${new Date().getFullYear()} Bienes Raíces. Todos los derechos reservados.
+              © ${new Date().getFullYear()} CampuHomeManager. Todos los derechos reservados.
           </p>
       </div>
       `,
