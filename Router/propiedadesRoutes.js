@@ -9,11 +9,12 @@ import {
   formularioPropiedades,
   crearPropiedad,
   agregarImagen,
+  agregarImagenPost,
 } from "../Controllers/propiedadesController.js";
 
 //Rutas
-router.get("/propiedades",protegerRuta, homePropiedades);
-router.get("/propiedades/crear",protegerRuta, formularioPropiedades);
+router.get("/propiedades", protegerRuta, homePropiedades);
+router.get("/propiedades/crear", protegerRuta, formularioPropiedades);
 router.post(
   "/propiedades/crear",
   protegerRuta,
@@ -28,6 +29,7 @@ router.post(
   crearPropiedad
 );
 router.get("/propiedades/agregarImagen/:id", protegerRuta, agregarImagen);
+router.post("/propiedades/agregarImagen/:id", protegerRuta, agregarImagenPost);
 
 //Exportar rutas
 export default router;
