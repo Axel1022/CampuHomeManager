@@ -2,6 +2,7 @@ import express from "express";
 import { body } from "express-validator";
 const router = express.Router();
 import protegerRuta from "../middleware/rutasProtegidas.js";
+import upload from "../middleware/subirImagen.js";
 
 // Importar controladores
 import {
@@ -29,7 +30,12 @@ router.post(
   crearPropiedad
 );
 router.get("/propiedades/agregarImagen/:id", protegerRuta, agregarImagen);
-router.post("/propiedades/agregarImagen/:id", protegerRuta, agregarImagenPost);
+router.post(
+  "/propiedades/agregarImagen/:id",
+  protegerRuta,
+  upload.single("imagen"),
+  agregarImagenPost
+);
 
 //Exportar rutas
 export default router;
