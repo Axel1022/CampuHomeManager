@@ -37,5 +37,14 @@ router.post(
   agregarImagenPost
 );
 
+//Rutas
+//Eliminar //!Hay Que crear estos controladores
+router.post("/propiedades/eliminarPropiedad/:id", protegerRuta, eliminarPropiedad);
+//Editar
+router.get("/propiedades/editarPropiedad/:id", protegerRuta, editarPropiedad);
+router.post("/propiedades/editarPropiedad/:id", protegerRuta, editarPropiedadPost);
+//Cambiar estado
+router.post("/propiedades/cambiarEstado/:id", protegerRuta, cambiarEstadoPropiedad);
+
 //Exportar rutas
 export default router;
