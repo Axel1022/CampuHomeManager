@@ -1,11 +1,39 @@
 import { validationResult } from "express-validator";
 import { obtenerCategoriasYPrecios } from "../helpers/obtnerCategoriasyPrecios.js";
 import { Propiedad } from "../Models/Relaciones.js";
+import { Categoria, Precio } from "../Models/Relaciones.js";
 
 //TODO: Muestras las propiedades en el home
 const homePropiedades = async (req, res) => {
+  //Paso 1: Buscar el id del usuario loggeado
+  const { id } = req.usuario;
+
+  //Paso 2: Buscar sus propiedades
+
+  const propiedades = await Propiedad.findAll({
+    where: {
+      usuarioId: id,
+    },
+    include: [
+      {
+        model: Categoria,
+        as: "categoria",
+      },
+      {
+        model: Precio,
+        as: "precio",
+      },
+    ],
+  });
+
+  //Paso 3: Mapear las propiedades
+
+  const propiedadesMap = propiedades.map(({ dataValues }) => dataValues);
+
   res.render("propiedades/admin", {
     pagina: "Mis Propiedades",
+    hasPropiedades: true,
+    propiedadesMap,
   });
 };
 
