@@ -3,7 +3,7 @@ import { obtenerCategoriasYPrecios } from "../helpers/obtnerCategoriasyPrecios.j
 import { Propiedad } from "../Models/Relaciones.js";
 
 //TODO: Muestras las propiedades en el home
-const homePropiedades = (req, res) => {
+const homePropiedades = async (req, res) => {
   res.render("propiedades/admin", {
     pagina: "Mis Propiedades",
   });
@@ -113,8 +113,44 @@ const agregarImagen = async (req, res) => {
   });
 };
 
-const agregarImagenPost = async (req, res) => {
-  console.log("Subiendo imagen");
+const agregarImagenPost = async (req, res, next) => {
+  const { id } = req.params;
+  const propiedad = await Propiedad.findByPk(id);
+  if (!propiedad) {
+    //Si no existe la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  //Validar que la propiedad no este publicada
+  if (propiedad.publicado) {
+    //Si la propiedad esta publicada
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  //validar el dueño de la propiedad
+  if (req.usuario.id !== propiedad.usuarioId) {
+    // Si el usuario no es el dueño de la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  try {
+    //Aqui guardo la imagen en la base de datos (ubicacion de la imagen)
+
+    console.log(req.file);
+
+    propiedad.imagen = req.file.filename;
+    propiedad.publicado = true;
+    await propiedad.save();
+
+    //Dopzone redirige a las propiedades
+
+    next();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export {
