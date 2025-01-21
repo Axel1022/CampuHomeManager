@@ -4,16 +4,17 @@ import bcrypt from "bcrypt";
 import { emailRegistro, emailRestablecerContrasena } from "../helpers/email.js";
 import Usuario from "../Models/Usuario.js";
 
-//Formulario para iniciar sesion
-const formularioLogin = async (req, res) => {
+//TODO: Formulario para iniciar sesion
+const formularioLogin = async (req, res, next) => {
   res.status(401).render("auth/login", {
     pagina: "Iniciar Sesión",
   });
 };
 
-//Validar credenciales
-const validarUsuario = async (req, res) => {
-  //Validando que sea una contrasena y correo valido
+//TODO: Verificar que sea un usuario valido
+
+// 1: Valida campos del formulario
+const camposValidos = async (req, res, next) => {
   await check("correo", "Debe ser un correo válido.").isEmail().run(req);
   await check("contrasena", "La contraseña debe tener al menos 8 caracteres.")
     .isLength({ min: 8 })
@@ -29,10 +30,13 @@ const validarUsuario = async (req, res) => {
       },
     });
   }
-  try {
-    const { correo, contrasena } = req.body;
+  next();
+};
 
-    //Verificando si el usuario existe
+// 2: Verifica que el usuario exista
+const usuarioLegitimo = async (req, res, next) => {
+  const { correo } = req.body;
+  try {
     const usuario = await Usuario.findOne({
       where: { email: correo },
     });
@@ -50,8 +54,25 @@ const validarUsuario = async (req, res) => {
         },
       });
     }
+    req.usuario = usuario;
+    next();
+  } catch (error) {
+    res.status(500).render("auth/login", {
+      pagina: "Iniciar Sesión",
+      errores: [
+        {
+          msg: "Hubo un problema al procesar tu solicitud. Intenta nuevamente más tarde.",
+        },
+      ],
+      usuario: { correo: req.body.correo },
+    });
+  }
+};
 
-    //Verifico que el usuario activo su cuenta
+// 3: Validar si el usuario esta activo
+const usuarioActivo = async (req, res, next) => {
+  try {
+    const usuario = req.usuario;
     if (!usuario.confirmado) {
       return res.status(403).render("auth/login", {
         pagina: "Iniciar Sesión",
@@ -65,8 +86,26 @@ const validarUsuario = async (req, res) => {
         },
       });
     }
+    next();
+  } catch (error) {
+    res.status(500).render("auth/login", {
+      pagina: "Iniciar Sesión",
+      errores: [
+        {
+          msg: "Hubo un problema al procesar tu solicitud. Intenta nuevamente más tarde.",
+        },
+      ],
+      usuario: { correo: req.body.correo },
+    });
+  }
+};
 
-    //Verificando la contraseña
+// 4: Verificar la contraseña
+const verificarContrasena = async (req, res, next) => {
+  try {
+    const { contrasena } = req.body;
+    const usuario = req.usuario;
+
     const contrasenaValida = await bcrypt.compare(contrasena, usuario.password);
     if (!contrasenaValida) {
       return res.status(400).render("auth/login", {
@@ -81,16 +120,9 @@ const validarUsuario = async (req, res) => {
         },
       });
     }
-    //Autenticar usuario
-    const token = generarJWT({ id: usuario.id, nombre: usuario.nombre });
-    //Guardando token en la cookie
-    return res
-      .cookie("_token", token, {
-        httpOnly: true,
-      })
-      .redirect("/propiedades");
+
+    next();
   } catch (error) {
-    console.error("Error durante el proceso de autenticación:", error);
     res.status(500).render("auth/login", {
       pagina: "Iniciar Sesión",
       errores: [
@@ -103,7 +135,19 @@ const validarUsuario = async (req, res) => {
   }
 };
 
-//Formulario para registrar usuarios
+// 5: Autenticar usuario
+const autenticarUsuario = async (req, res, next) => {
+  const usuario = req.usuario;
+  const token = generarJWT({ id: usuario.id, nombre: usuario.nombre });
+
+  return res
+    .cookie("_token", token, {
+      httpOnly: true,
+    })
+    .redirect("/propiedades");
+};
+
+//TODO: Formulario para registrar usuarios
 const formularioRegistro = async (req, res) => {
   res.render("auth/registro", {
     pagina: "Crear Cuenta",
@@ -327,7 +371,13 @@ const validarNuevaPass = async (req, res) => {
 
 export {
   formularioLogin,
-  validarUsuario,
+  camposValidos,
+  usuarioLegitimo,
+  usuarioActivo,
+  verificarContrasena,
+  autenticarUsuario,
+
+  //-------------------------
   formularioRegistro,
   formularioVerificarCorreo,
   validarPass,
