@@ -182,6 +182,7 @@ const agregarImagenPost = async (req, res, next) => {
   }
 };
 
+//TODO: Eliminar propiedad
 const eliminarPropiedad = async (req, res) => {
   //ide de la propiedad
   const { id } = req.params;
@@ -203,6 +204,8 @@ const eliminarPropiedad = async (req, res) => {
   await propiedad.destroy();
   res.redirect("/propiedades");
 };
+
+//TODO: Editar propiedad
 const editarPropiedad = async (req, res) => {
   const { id } = req.params;
 
@@ -229,6 +232,7 @@ const editarPropiedad = async (req, res) => {
     datos: propiedad,
   });
 };
+
 const editarPropiedadPost = async (req, res) => {
   //Validamos los errores
   const validaciones = validationResult(req);
@@ -295,8 +299,12 @@ const editarPropiedadPost = async (req, res) => {
     console.log(error);
   }
 };
-const cambiarEstadoPropiedad = async (req, res) => {};
 
+const mostrarPropiedad = (req, res, next) => {
+  res.render("propiedades/mostrarPropiedad", {
+    pagina: "Mostrar Propiedad",
+  });
+};
 export {
   homePropiedades,
   formularioPropiedades,
@@ -306,5 +314,5 @@ export {
   eliminarPropiedad,
   editarPropiedad,
   editarPropiedadPost,
-  cambiarEstadoPropiedad,
+  mostrarPropiedad,
 };
