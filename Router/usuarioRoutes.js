@@ -2,7 +2,13 @@ import express from "express";
 const router = express.Router();
 import {
   formularioLogin,
-  validarUsuario,
+  camposValidos,
+  usuarioLegitimo,
+  usuarioActivo,
+  verificarContrasena,
+  autenticarUsuario,
+  // ----------------------
+
   formularioRegistro,
   formularioVerificarCorreo,
   validarPass,
@@ -14,7 +20,14 @@ import {
 
 //Login del usuario
 router.get("/login", formularioLogin); // Formulario para el login
-router.post("/login", validarUsuario); // Verifico las credenciales del usuario
+router.post(
+  "/login",
+  camposValidos, //Valida que los campos no esten vacios
+  usuarioLegitimo, //Valida que el usuario exista
+  usuarioActivo, //Valida que el usuario este activo
+  verificarContrasena, //Valida que la contraseña sea correcta
+  autenticarUsuario // Autentica al usuario
+);
 
 // Registro de usuario
 router.get("/registro", formularioRegistro); // Formulario para el registro de usuario
