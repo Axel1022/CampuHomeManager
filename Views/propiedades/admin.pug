@@ -31,9 +31,9 @@ block contenido
                                 form(action="#")
                                     input(type="submit" class=`w-full py-2 px-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer ${propiedad.publicado  ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"} ` value=`${propiedad.publicado  ? "Publicada" : "No Publicada"}`)
 
-                                a(href="#" class="w-full py-2 px-2 md:py-1 text-xs leading-5 font-semibold text-center rounded cursor-pointer bg-indigo-100 text-indigo-800") Editar
+                                a(href=`/propiedades/editarPropiedad/${propiedad.id}` class="w-full py-2 px-2 md:py-1 text-xs leading-5 font-semibold text-center rounded cursor-pointer bg-indigo-100 text-indigo-800") Editar
 
-                                form(action="#")
+                                form(action=`propiedades/eliminarPropiedad/${propiedad.id}` method="POST")
                                     input(type="submit" class="w-full py-2 px-2 md:py-1 text-xs leading-5 font-semibold rounded cursor-pointer bg-red-100 text-red-800" value="Eliminar")
 
 
