@@ -145,7 +145,6 @@ const autenticarUsuario = async (req, res, next) => {
       httpOnly: true,
     })
     .redirect("/propiedades");
-
 };
 
 //TODO: Formulario para registrar usuarios
@@ -153,7 +152,6 @@ const formularioRegistro = async (req, res) => {
   res.render("auth/registro", {
     pagina: "Crear Cuenta",
   });
-
 };
 
 //TODO: Crear cuenta de usuario
@@ -223,12 +221,12 @@ const crearUsuario = async (req, res, next) => {
 // 4: Enviar correo de activación
 const enviarCorreo = async (req, res, next) => {
   const usuario = req.usuario;
-  //! DECOMENTAR AQUI
-  // emailRegistro({
-  //   nombre: usuario.nombre,
-  //   email: usuario.email,
-  //   token: usuario.token,
-  // });
+  // ! DECOMENTAR AQUI
+  emailRegistro({
+    nombre: usuario.nombre,
+    email: usuario.email,
+    token: usuario.token,
+  });
   console.log("Correo enviado");
   next();
 };
@@ -244,8 +242,10 @@ const redireccionarMensajeExito = async (req, res) => {
   });
 };
 
-// Actualizar el estado del usuario y eliminar el token
-const confirmarUsuario = async (req, res) => {
+//TODO: Activar usaurio
+
+//1: Validar token
+const validarToken = async (req, res, next) => {
   const { token } = req.params;
   const usuario = await Usuario.findOne({ where: { token } });
 
@@ -257,17 +257,24 @@ const confirmarUsuario = async (req, res) => {
       error: true,
     });
   }
-  //Eliminar el token y confirmado como true
+  req.usuario = usuario;
+
+  console.log("Token validado");
+  next();
+};
+
+//2:  Remover token
+const eliminarToken = async (req, res, next) => {
+  const usuario = req.usuario;
   usuario.token = null;
   usuario.confirmado = true;
-
-  // await Usuario.update(
-  //   { token: "", confirmado: true },
-  //   { where: { token } }
-  // );
-
   await usuario.save();
 
+  next();
+};
+
+//3: Mensaje confirmar cuenta
+const confirmarCuenta = async (req, res) => {
   res.render("auth/confirmarCuenta", {
     pagina: "Cuenta Confirmada",
     mensaje: "Cuenta activada corectamente",
@@ -276,14 +283,16 @@ const confirmarUsuario = async (req, res) => {
   });
 };
 
-//Formulario para colocar el correo
+//TODO: Formulario olvide contraseña
 const formularioVerificarCorreo = async (req, res) => {
   res.render("auth/olvidePass", {
     pagina: "Recuperar acceso a Bienes Raices",
   });
 };
 
-//Validaciones antes de enviar correo al usuario con el link para cambiar contrasena
+//TODO: Enviar las instruciones para cambiar contraseña
+
+// 1: Validar correo
 const validarPass = async (req, res) => {
   await check("correo", "El correo es obligatorio.").notEmpty().run(req);
   await check("correo", "Debe ser un correo válido.").isEmail().run(req);
@@ -407,10 +416,13 @@ export {
   crearUsuario,
   enviarCorreo,
   redireccionarMensajeExito,
+  validarToken,
+  eliminarToken,
+  confirmarCuenta,
   //-------------------------
   formularioVerificarCorreo,
   validarPass,
-  confirmarUsuario,
+
   FormularioNuevaPass,
   validarNuevaPass,
 };
