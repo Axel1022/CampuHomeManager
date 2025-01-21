@@ -11,6 +11,10 @@ import {
   crearPropiedad,
   agregarImagen,
   agregarImagenPost,
+  eliminarPropiedad,
+  editarPropiedad,
+  editarPropiedadPost,
+  cambiarEstadoPropiedad,
 } from "../Controllers/propiedadesController.js";
 
 //Rutas
@@ -39,12 +43,32 @@ router.post(
 
 //Rutas
 //Eliminar //!Hay Que crear estos controladores
-router.post("/propiedades/eliminarPropiedad/:id", protegerRuta, eliminarPropiedad);
+router.post(
+  "/propiedades/eliminarPropiedad/:id",
+  protegerRuta,
+  eliminarPropiedad
+);
 //Editar
 router.get("/propiedades/editarPropiedad/:id", protegerRuta, editarPropiedad);
-router.post("/propiedades/editarPropiedad/:id", protegerRuta, editarPropiedadPost);
+router.post(
+  "/propiedades/editarPropiedad/:id",
+  protegerRuta,
+  body("titulo", "El título no puede estar vacío").notEmpty(),
+  body("descripcion", "La descripción no puede estar vacía").notEmpty(),
+  body("categoriaId", "La categoría es obligatoria").notEmpty(),
+  body("precioId", "El precio es obligatorio").notEmpty(),
+  body("habitaciones", "El número de habitaciones es obligatorio").notEmpty(),
+  body("parqueos", "El número de parqueos es obligatorio").notEmpty(),
+  body("banos", "El número de baños no puede estar vacío").notEmpty(),
+  body("calle", "Ubica la propiedad en el mapa.").notEmpty(),
+  editarPropiedadPost
+);
 //Cambiar estado
-router.post("/propiedades/cambiarEstado/:id", protegerRuta, cambiarEstadoPropiedad);
+router.post(
+  "/propiedades/cambiarEstado/:id",
+  protegerRuta,
+  cambiarEstadoPropiedad
+);
 
 //Exportar rutas
 export default router;
