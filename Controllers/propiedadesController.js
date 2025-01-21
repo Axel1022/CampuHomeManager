@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import { obtenerCategoriasYPrecios } from "../helpers/obtnerCategoriasyPrecios.js";
 import { Propiedad } from "../Models/Relaciones.js";
 import { Categoria, Precio } from "../Models/Relaciones.js";
+import { unlink } from "node:fs/promises"; //Para eliminar la imagen
 
 //TODO: Muestras las propiedades en el home
 const homePropiedades = async (req, res) => {
@@ -181,10 +182,129 @@ const agregarImagenPost = async (req, res, next) => {
   }
 };
 
+const eliminarPropiedad = async (req, res) => {
+  //ide de la propiedad
+  const { id } = req.params;
+
+  const propiedad = await Propiedad.findByPk(id);
+  if (!propiedad) {
+    //Si no existe la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  //validar el dueño de la propiedad
+  if (req.usuario.id !== propiedad.usuarioId) {
+    // Si el usuario no es el dueño de la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+  await unlink(`public/uploads/${propiedad.imagen}`); //Eliminamos la imagen
+  await propiedad.destroy();
+  res.redirect("/propiedades");
+};
+const editarPropiedad = async (req, res) => {
+  const { id } = req.params;
+
+  const propiedad = await Propiedad.findByPk(id);
+  if (!propiedad) {
+    //Si no existe la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  //validar el dueño de la propiedad
+  if (req.usuario.id !== propiedad.usuarioId) {
+    // Si el usuario no es el dueño de la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  const { categoriasMap, preciosMap } = await obtenerCategoriasYPrecios();
+  // Mostrar el formulario
+  res.render("propiedades/editarPropiedad", {
+    pagina: `Editar Propiedad: ${propiedad.titulo}`,
+    Categorias: categoriasMap,
+    Precios: preciosMap,
+    datos: propiedad,
+  });
+};
+const editarPropiedadPost = async (req, res) => {
+  //Validamos los errores
+  const validaciones = validationResult(req);
+  if (!validaciones.isEmpty()) {
+    const errores = validaciones.array();
+    const { categoriasMap, preciosMap } = await obtenerCategoriasYPrecios();
+    //Si hay errores
+    return res.render("propiedades/editarPropiedad", {
+      pagina: `Editar Propiedad`,
+      Categorias: categoriasMap,
+      Precios: preciosMap,
+      datos: req.body,
+      errores,
+    });
+  }
+  //Ontenermos el id la propiedad
+  //Verificamos que exista
+  const { id } = req.params;
+  const propiedad = await Propiedad.findByPk(id);
+  if (!propiedad) {
+    //Si no existe la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+
+  //validar el dueño de la propiedad
+  if (req.usuario.id !== propiedad.usuarioId) {
+    // Si el usuario no es el dueño de la propiedad
+    //Lo mandamos al home de propiedades
+    return res.redirect("/propiedades");
+  }
+  //Reescribir propiedad
+  try {
+    const {
+      titulo,
+      descripcion,
+      habitaciones,
+      parqueos,
+      banos,
+      calle,
+      lat,
+      lng,
+      categoriaId,
+      precioId,
+    } = req.body;
+    // Actualizamos los datos de la propiedad
+    propiedad.set({
+      titulo,
+      descripcion,
+      habitaciones,
+      parqueos,
+      banos,
+      calle,
+      lat,
+      lng,
+      categoriaId,
+      precioId,
+    });
+    // Guardamos los cambios en la base de datos
+    await propiedad.save();
+
+    res.redirect("/propiedades");
+  } catch (error) {
+    console.log(error);
+  }
+};
+const cambiarEstadoPropiedad = async (req, res) => {};
+
 export {
   homePropiedades,
   formularioPropiedades,
   crearPropiedad,
   agregarImagen,
   agregarImagenPost,
+  eliminarPropiedad,
+  editarPropiedad,
+  editarPropiedadPost,
+  cambiarEstadoPropiedad,
 };
