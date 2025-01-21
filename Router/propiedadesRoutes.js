@@ -14,7 +14,7 @@ import {
   eliminarPropiedad,
   editarPropiedad,
   editarPropiedadPost,
-  cambiarEstadoPropiedad,
+  mostrarPropiedad,
 } from "../Controllers/propiedadesController.js";
 
 //Rutas
@@ -63,12 +63,9 @@ router.post(
   body("calle", "Ubica la propiedad en el mapa.").notEmpty(),
   editarPropiedadPost
 );
-//Cambiar estado
-router.post(
-  "/propiedades/cambiarEstado/:id",
-  protegerRuta,
-  cambiarEstadoPropiedad
-);
+
+// Rutas que van a ser publicas
+router.get("/propiedades/:id", mostrarPropiedad);
 
 //Exportar rutas
 export default router;
