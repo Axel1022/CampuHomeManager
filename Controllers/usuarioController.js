@@ -11,10 +11,10 @@ const formularioLogin = async (req, res, next) => {
   });
 };
 
-//TODO: Verificar que sea un usuario valido
+//TODO: Autenticar usuario
 
 // 1: Valida campos del formulario
-const camposValidos = async (req, res, next) => {
+const validarCamposFormularioLogin = async (req, res, next) => {
   await check("correo", "Debe ser un correo válido.").isEmail().run(req);
   await check("contrasena", "La contraseña debe tener al menos 8 caracteres.")
     .isLength({ min: 8 })
@@ -145,19 +145,21 @@ const autenticarUsuario = async (req, res, next) => {
       httpOnly: true,
     })
     .redirect("/propiedades");
+
 };
 
 //TODO: Formulario para registrar usuarios
 const formularioRegistro = async (req, res) => {
   res.render("auth/registro", {
     pagina: "Crear Cuenta",
-    // csrfToken: req.csrfToken(), Esto no me funciona, xd
   });
+
 };
 
-// Validaciones antes de registrar al usuario
-const validarRegistro = async (req, res, next) => {
-  //Validaciones
+//TODO: Crear cuenta de usuario
+
+// 1: Validar campos del formulario
+const validarFormularioRegistro = async (req, res, next) => {
   await check("nombre", "El nombre es obligatorio.").notEmpty().run(req);
   await check("correo", "Debe ser un correo válido.").isEmail().run(req);
   await check("contrasena", "La contraseña debe tener al menos 8 caracteres.")
@@ -181,6 +183,12 @@ const validarRegistro = async (req, res, next) => {
       },
     });
   }
+  console.log("Validacion de campos correcta");
+  next();
+};
+
+// 2: Validar si el correo ya existe
+const usuarioExistente = async (req, res, next) => {
   const existeEmail = await Usuario.findOne({
     where: { email: req.body.correo },
   });
@@ -194,6 +202,12 @@ const validarRegistro = async (req, res, next) => {
       },
     });
   }
+  console.log("Usuario no existe");
+  next();
+};
+
+// 3: Crear usuario
+const crearUsuario = async (req, res, next) => {
   const usuario = await Usuario.create({
     nombre: req.body.nombre,
     email: req.body.correo,
@@ -201,15 +215,26 @@ const validarRegistro = async (req, res, next) => {
     token: generarId(),
     confirmado: false,
   });
+  req.usuario = usuario;
+  console.log("Usuario creado");
+  next();
+};
 
+// 4: Enviar correo de activación
+const enviarCorreo = async (req, res, next) => {
+  const usuario = req.usuario;
   //! DECOMENTAR AQUI
-  // // Enviar correo de activación
   // emailRegistro({
   //   nombre: usuario.nombre,
   //   email: usuario.email,
   //   token: usuario.token,
   // });
+  console.log("Correo enviado");
+  next();
+};
 
+// 5: Mensaje de exito
+const redireccionarMensajeExito = async (req, res) => {
   res.render("templatess/mensaje", {
     pagina: "Registro Exitoso",
     mensaje:
@@ -371,17 +396,20 @@ const validarNuevaPass = async (req, res) => {
 
 export {
   formularioLogin,
-  camposValidos,
+  validarCamposFormularioLogin,
   usuarioLegitimo,
   usuarioActivo,
   verificarContrasena,
   autenticarUsuario,
-
-  //-------------------------
   formularioRegistro,
+  validarFormularioRegistro,
+  usuarioExistente,
+  crearUsuario,
+  enviarCorreo,
+  redireccionarMensajeExito,
+  //-------------------------
   formularioVerificarCorreo,
   validarPass,
-  validarRegistro,
   confirmarUsuario,
   FormularioNuevaPass,
   validarNuevaPass,
