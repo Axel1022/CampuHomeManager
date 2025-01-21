@@ -2,17 +2,21 @@ import express from "express";
 const router = express.Router();
 import {
   formularioLogin,
-  camposValidos,
+  validarCamposFormularioLogin,
   usuarioLegitimo,
   usuarioActivo,
   verificarContrasena,
   autenticarUsuario,
-  // ----------------------
-
   formularioRegistro,
+  validarFormularioRegistro,
+  usuarioExistente,
+  crearUsuario,
+  enviarCorreo,
+  redireccionarMensajeExito,
+  // ----------------------
   formularioVerificarCorreo,
   validarPass,
-  validarRegistro,
+
   confirmarUsuario,
   FormularioNuevaPass,
   validarNuevaPass,
@@ -22,7 +26,7 @@ import {
 router.get("/login", formularioLogin); // Formulario para el login
 router.post(
   "/login",
-  camposValidos, //Valida que los campos no esten vacios
+  validarCamposFormularioLogin, //Valida que los campos no esten vacios
   usuarioLegitimo, //Valida que el usuario exista
   usuarioActivo, //Valida que el usuario este activo
   verificarContrasena, //Valida que la contraseña sea correcta
@@ -31,7 +35,14 @@ router.post(
 
 // Registro de usuario
 router.get("/registro", formularioRegistro); // Formulario para el registro de usuario
-router.post("/registro", validarRegistro); // Lógica para registrar un usuario
+router.post(
+  "/registro",
+  validarFormularioRegistro,
+  usuarioExistente,
+  crearUsuario,
+  enviarCorreo,
+  redireccionarMensajeExito
+); 
 
 // Confirmación de token para activar al usuario
 router.get("/confirmar/:token", confirmarUsuario); // Confirmación de usuario mediante un token único
