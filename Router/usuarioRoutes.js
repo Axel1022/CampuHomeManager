@@ -13,11 +13,12 @@ import {
   crearUsuario,
   enviarCorreo,
   redireccionarMensajeExito,
+  validarToken,
+  eliminarToken,
+  confirmarCuenta,
   // ----------------------
   formularioVerificarCorreo,
   validarPass,
-
-  confirmarUsuario,
   FormularioNuevaPass,
   validarNuevaPass,
 } from "../Controllers/usuarioController.js";
@@ -37,15 +38,19 @@ router.post(
 router.get("/registro", formularioRegistro); // Formulario para el registro de usuario
 router.post(
   "/registro",
-  validarFormularioRegistro,
-  usuarioExistente,
-  crearUsuario,
-  enviarCorreo,
-  redireccionarMensajeExito
-); 
+  validarFormularioRegistro, // Valida que los campos no estén vacíos
+  usuarioExistente, // Valida que el usuario no exista
+  crearUsuario, // Crea el usuario
+  enviarCorreo, // Envia el correo de creacion
+  redireccionarMensajeExito // Mensaje de confirmacion de creacion
+);
 
 // Confirmación de token para activar al usuario
-router.get("/confirmar/:token", confirmarUsuario); // Confirmación de usuario mediante un token único
+router.get("/confirmar/:token",
+  validarToken, // Valida el token
+  eliminarToken, // Elimina el token
+  confirmarCuenta //Mensaje de confirmaciion de activacion
+);
 
 // Rutas para recuperar la contraseña
 router.get("/olvide-pass", formularioVerificarCorreo); // Muestra el formulario para ingresar el correo del usuario
