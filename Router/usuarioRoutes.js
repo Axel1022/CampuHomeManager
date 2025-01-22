@@ -16,11 +16,17 @@ import {
   validarToken,
   eliminarToken,
   confirmarCuenta,
-  // ----------------------
+  validarFormulariocorreoPass,
+  usuarioExistePass,
+  asignarTokenPass,
+  emailRestablecerpass,
+  mensajeExitoPass,
   formularioVerificarCorreo,
-  validarPass,
+  validarTokenPass,
   FormularioNuevaPass,
-  validarNuevaPass,
+  FormularioConfirmarDatosPass,
+  cambiarContrasena,
+  confirmarNuevaPass,
 } from "../Controllers/usuarioController.js";
 
 //Login del usuario
@@ -46,7 +52,8 @@ router.post(
 );
 
 // Confirmación de token para activar al usuario
-router.get("/confirmar/:token",
+router.get(
+  "/confirmar/:token",
   validarToken, // Valida el token
   eliminarToken, // Elimina el token
   confirmarCuenta //Mensaje de confirmaciion de activacion
@@ -54,10 +61,26 @@ router.get("/confirmar/:token",
 
 // Rutas para recuperar la contraseña
 router.get("/olvide-pass", formularioVerificarCorreo); // Muestra el formulario para ingresar el correo del usuario
-router.post("/olvide-pass", validarPass); // Si el correo existe, se envía el token al correo
+router.post(
+  "/olvide-pass",
+  validarFormulariocorreoPass, //Valida que los campos no esten vacios
+  usuarioExistePass, // Verifica que exista la contraseña
+  asignarTokenPass, // Coloca un token al usuario
+  emailRestablecerpass, // Envia correo con las instrucciones
+  mensajeExitoPass // Mensaje de exito
+);
 
 // Rutas para cambiar la contraseña (requiere un token válido)
-router.get("/cambiar-pass/:token", FormularioNuevaPass); // Muestra el formulario para cambiar la contraseña
-router.post("/cambiar-pass/:token", validarNuevaPass); // Valida la nueva contraseña, y elimina el token para evitar reutilización
+router.get(
+  "/cambiar-pass/:token",
+  validarTokenPass, // Valida que los campos no esten vacios
+  FormularioNuevaPass // Muesta el formulario de la contraseña
+);
+router.post(
+  "/cambiar-pass/:token",
+  FormularioConfirmarDatosPass, //Valida que los campos no esten vacios
+  cambiarContrasena, // Cambiar contraseña
+  confirmarNuevaPass // Mensaje de exito
+);
 
 export default router;
