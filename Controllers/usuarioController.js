@@ -292,8 +292,8 @@ const formularioVerificarCorreo = async (req, res) => {
 
 //TODO: Enviar las instruciones para cambiar contraseña
 
-// 1: Validar correo
-const validarPass = async (req, res) => {
+// 1: Valida campos del formulario
+const validarFormulariocorreoPass = async (req, res, next) => {
   await check("correo", "El correo es obligatorio.").notEmpty().run(req);
   await check("correo", "Debe ser un correo válido.").isEmail().run(req);
   let resultado = validationResult(req);
@@ -307,8 +307,11 @@ const validarPass = async (req, res) => {
       },
     });
   }
+  next();
+};
 
-  // Verifico si el usuario existe
+// 2: Validar si el correo existe
+const usuarioExistePass = async (req, res, next) => {
   const usuario = await Usuario.findOne({
     where: { email: req.body.correo },
   });
@@ -322,18 +325,34 @@ const validarPass = async (req, res) => {
       },
     });
   }
+  console.log("Usuario encontrado");
+  req.usuario = usuario;
+  next();
+};
+
+// 3: Enviar correo con token
+const asignarTokenPass = async (req, res, next) => {
+  const usuario = req.usuario;
   usuario.token = generarId();
-  usuario.save();
+  await usuario.save();
+  next();
+};
 
+// 4: Enviar correo
+const emailRestablecerpass = async (req, res, next) => {
   //! DECOMENTAR AQUI
+  // Enviar correo
+  const usuario = req.usuario;
+  emailRestablecerContrasena({
+    email: usuario.email,
+    token: usuario.token,
+    nombre: usuario.nombre,
+  });
+  next();
+};
 
-  // // Enviar correo
-  // emailRestablecerContrasena({
-  //   email: usuario.email,
-  //   token: usuario.token,
-  //   nombre: usuario.nombre,
-  // });
-
+// 5: Mensaje de exito
+const mensajeExitoPass = async (req, res) => {
   res.render("templatess/mensaje", {
     pagina: "Solicitud Exitosa",
     mensaje:
@@ -343,8 +362,10 @@ const validarPass = async (req, res) => {
   });
 };
 
-//Formulario para colocar la nueva contrasena (requiere un token válido)
-const FormularioNuevaPass = async (req, res) => {
+//TODO: Formulario para colocar la nueva contrasena
+
+// 1: Verificar token
+const validarTokenPass = async (req, res, next) => {
   const { token } = req.params;
 
   // Primero verifico que el token sea válido.
@@ -359,15 +380,23 @@ const FormularioNuevaPass = async (req, res) => {
       titulo: "Solicitar Nuevo Enlace",
     });
   }
-  //Formulario para colocar la nueva password
+  req.usuario = usuario;
+  next();
+};
+
+// 2: Formulario para colocar la nueva password
+const FormularioNuevaPass = async (req, res) => {
+  const { usuario } = req.usuario;
   res.render("auth/cambiarPass", {
     pagina: "Cambiar Contraseña",
     usuario: usuario.email,
   });
 };
 
-// Validaciones antes de cambiar la contrasena
-const validarNuevaPass = async (req, res) => {
+//TODO: Cambiar contraseña
+
+// 1: Confirmar campos del formulario
+const FormularioConfirmarDatosPass = async (req, res) => {
   await check("contrasena", "La contraseña debe tener al menos 8 caracteres.")
     .isLength({ min: 8 })
     .run(req);
@@ -383,17 +412,27 @@ const validarNuevaPass = async (req, res) => {
       errores: resultado.array(),
     });
   }
+  next();
+};
+
+// 2: Cambiar contraseña
+const cambiarContrasena = async (req, res, next) => {
   const { token } = req.params;
   const { contrasena } = req.body;
 
-  // Actualizar la contraseña del usuario y eliminar token
   const usuario = await Usuario.findOne({ where: { token } });
 
+  // Actualizar la contraseña del usuario y eliminar token
   const salt = await bcrypt.genSalt(10);
   usuario.password = await bcrypt.hash(contrasena, salt);
   usuario.token = null;
   await usuario.save();
 
+  next();
+};
+
+// 3: Mensaje de exito
+const confirmarNuevaPass = async (req, res, next) => {
   res.render("templatess/mensaje", {
     pagina: "Contraseña Actualizada",
     mensaje:
@@ -419,10 +458,15 @@ export {
   validarToken,
   eliminarToken,
   confirmarCuenta,
-  //-------------------------
+  validarFormulariocorreoPass,
+  usuarioExistePass,
+  asignarTokenPass,
+  emailRestablecerpass,
+  mensajeExitoPass,
   formularioVerificarCorreo,
-  validarPass,
-
+  validarTokenPass,
   FormularioNuevaPass,
-  validarNuevaPass,
+  FormularioConfirmarDatosPass,
+  cambiarContrasena,
+  confirmarNuevaPass,
 };
