@@ -6,20 +6,36 @@ import upload from "../middleware/subirImagen.js";
 
 // Importar controladores
 import {
-  homePropiedades,
-  formularioPropiedades,
+  cargarPropiedades,
+  mostrarPropiedades,
+  cargarCategoriasYPrecios,
+  formularioPropiedad,
+  validarDatosPropiedad,
   crearPropiedad,
-  agregarImagen,
-  agregarImagenPost,
+  validarPropiedadExiste,
+  validarPropiedadNoPubblicada,
+  validarPropiedadDueño,
+  mostrarFormularioImagenPropiedad,
+  guardarImagen,
   eliminarPropiedad,
+  formularioEditarPropiedad,
+  validarDatosEditarPropiedad,
   editarPropiedad,
-  editarPropiedadPost,
+  //*-*-*-*-*-*-*-*-*-*-*-*-*-*
   mostrarPropiedad,
 } from "../Controllers/propiedadesController.js";
 
 //Rutas
-router.get("/propiedades", protegerRuta, homePropiedades);
-router.get("/propiedades/crear", protegerRuta, formularioPropiedades);
+router.get("/propiedades",
+  protegerRuta,
+  cargarPropiedades,
+  mostrarPropiedades);
+router.get(
+  "/propiedades/crear",
+  protegerRuta,
+  cargarCategoriasYPrecios,
+  formularioPropiedad
+);
 router.post(
   "/propiedades/crear",
   protegerRuta,
@@ -31,14 +47,25 @@ router.post(
   body("parqueos", "El número de parqueos es obligatorio").notEmpty(),
   body("banos", "El número de baños no puede estar vacío").notEmpty(),
   body("calle", "Ubica la propiedad en el mapa.").notEmpty(),
+  validarDatosPropiedad,
   crearPropiedad
 );
-router.get("/propiedades/agregarImagen/:id", protegerRuta, agregarImagen);
+router.get(
+  "/propiedades/agregarImagen/:id",
+  protegerRuta,
+  validarPropiedadExiste,
+  validarPropiedadNoPubblicada,
+  validarPropiedadDueño,
+  mostrarFormularioImagenPropiedad
+);
 router.post(
   "/propiedades/agregarImagen/:id",
   protegerRuta,
   upload.single("imagen"),
-  agregarImagenPost
+  validarPropiedadExiste,
+  validarPropiedadNoPubblicada,
+  validarPropiedadDueño,
+  guardarImagen
 );
 
 //Rutas
@@ -46,10 +73,18 @@ router.post(
 router.post(
   "/propiedades/eliminarPropiedad/:id",
   protegerRuta,
+  validarPropiedadExiste,
+  validarPropiedadDueño,
   eliminarPropiedad
 );
 //Editar
-router.get("/propiedades/editarPropiedad/:id", protegerRuta, editarPropiedad);
+router.get(
+  "/propiedades/editarPropiedad/:id",
+  protegerRuta,
+  validarPropiedadExiste,
+  validarPropiedadDueño,
+  formularioEditarPropiedad
+);
 router.post(
   "/propiedades/editarPropiedad/:id",
   protegerRuta,
@@ -61,7 +96,10 @@ router.post(
   body("parqueos", "El número de parqueos es obligatorio").notEmpty(),
   body("banos", "El número de baños no puede estar vacío").notEmpty(),
   body("calle", "Ubica la propiedad en el mapa.").notEmpty(),
-  editarPropiedadPost
+  validarDatosEditarPropiedad,
+  validarPropiedadExiste,
+  validarPropiedadDueño,
+  editarPropiedad
 );
 
 // Rutas que van a ser publicas

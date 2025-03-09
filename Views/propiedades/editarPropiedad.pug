@@ -10,7 +10,7 @@ block contenido
                     p(class="bg-red-600 text-white uppercase text-xs text-center p-3 mb-2 rounded font-semibold shadow-md")= error.msg
 
     div(class="bg-white shadow py-8 px-4 rounded mx-auto max-w-4xl my-10 md:px-10")
-        form( method="post").space-y-8
+        form(href=`/propiedades/editarPropiedad/${datos.id}` method="post").space-y-8
             div.space-y-2
                 h3.text-lg-leading-6.font-medium.text-gray-900 Informacion General
                 p.text-gray-600 Añade informacion sobre la propiedad en venta

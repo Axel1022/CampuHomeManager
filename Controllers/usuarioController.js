@@ -386,7 +386,8 @@ const validarTokenPass = async (req, res, next) => {
 
 // 2: Formulario para colocar la nueva password
 const FormularioNuevaPass = async (req, res) => {
-  const { usuario } = req.usuario;
+  const { usuario } = req;
+  console.log(usuario);
   res.render("auth/cambiarPass", {
     pagina: "Cambiar Contraseña",
     usuario: usuario.email,
@@ -396,7 +397,7 @@ const FormularioNuevaPass = async (req, res) => {
 //TODO: Cambiar contraseña
 
 // 1: Confirmar campos del formulario
-const FormularioConfirmarDatosPass = async (req, res) => {
+const FormularioConfirmarDatosPass = async (req, res, next) => {
   await check("contrasena", "La contraseña debe tener al menos 8 caracteres.")
     .isLength({ min: 8 })
     .run(req);
